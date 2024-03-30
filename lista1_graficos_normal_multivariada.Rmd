@@ -1,0 +1,132 @@
+---
+title: "Lista 1 - Análise Multivariada 2023/1"
+subtitle: "Análise Gráfica e Normal Multivariada"
+author: "Márcia H. Barbian"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+
+
+# Exercício 1
+
+```{r, include = FALSE, warning=FALSE, message = FALSE}
+library(tidyverse)
+banco.1 <- read.delim("banco 1.txt", header=TRUE) #trocar 
+```
+
+O banco de dados abaixo consiste em quatro medidas diferentes de rigidez; x1, x2, x3 e x4, cada um com n=30.
+
+```{r, echo= FALSE}
+head(banco.1)
+```
+
+## a) 
+Compute a matriz de correlação entre as medidas. O que você nota?
+
+
+## b) 
+Produza gráficos de dispersão entre as variáveis através da função *ggpairs* disponível no pacote *GGally*.
+
+
+## c) 
+Faça Q-Q Plot para verificar a normalidade das medidas de rigidez. 
+
+
+##d)
+Faça mais 3 representações gráficas para esses dados. 
+
+
+# Exercício 2
+
+Faça o exercício 1.27 do livro Applied Multivariate Statistical Analysis.
+
+```{r, warning=FALSE, message=FALSE}
+
+
+National_Park = c("Arcadia", "Bruce Canyon", "Cuyahoga Valley", "Everglades", "Grang Canyon", "Grand Teton", "Great Smoky", "Hot Springs", "Olympic", "Mount Rainier", "Rocky Mountain", "Shenandoah", "Yellowstone", "Yosemite", "Zion")
+Size = c(47.4, 35.8, 32.9, 1508.5, 1217.4, 310, 521.8, 5.6, 922.7, 235.6, 265.8, 199, 2219.8, 761.3, 146.6)
+Visitors = c(2.05, 1.02, 2.53, 1.23, 4.4, 2.46, 9.19, 1.34, 3.14, 1.17, 2.80, 1.09, 2.84, 3.3, 2.59)
+
+dados = as.data.frame(cbind(National_Park, Size, Visitors))
+dados$Size = as.numeric(dados$Size)
+dados$Visitors = as.numeric(as.character(dados$Visitors))
+
+dados$Size = as.numeric(as.character(dados$Size)) 
+
+```
+
+
+# Exercício 3
+
+```{r, warning=FALSE, message=FALSE}
+banco_maratona <- read.delim("banco_maratona.txt")
+```
+
+## a) 
+Utilize 4 gráficos diferentes para representar os dados da tabela 1.9 do livro Applied Multivariate Statistical Analysis.
+
+
+## b) 
+Interprete os resultados encontrados em *a*.
+
+
+## c)
+Faça os exercícios 1.17, 1.18 e 1.19 do livro Applied Multivariate Statistical Analysis.
+
+**1.17**
+
+```{r, warning=FALSE, message=FALSE}
+x_bar = apply(banco_maratona[, 2:8], 2, mean)
+```
+
+
+**1.18** 
+
+```{r, warning=FALSE, message=FALSE}
+banco_maratona2 = banco_maratona%>%
+                    mutate(m100 = 100/m100,
+                           m200 = 200/m200,
+                           m400 = 400/m400,
+                           m800 = 800/(m800*60),
+                           m1500 = 1500/(m1500*60),
+                           Marathon = 42195/(Marathon*60))
+
+```
+
+
+**1.19** 
+
+
+# Exercício 4
+
+Um famoso banco de dados que está disponível no R é o *gapminder* do pacote de mesmo nome. O banco possui os dados referentes à população, renda per capta e expectativa de vida de diferentes países.
+
+## a)
+Veja o vídeo:
+https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen?language=pt-br
+
+## b)
+Veja o vídeo: https://www.youtube.com/watch?v=jbkSRLYSojo&t=207s
+
+## c)
+Faça 5 representações gráficas desses dados.
+
+
+## d)
+Queremos modelar algumas variáveis conjuntamente, utilizando uma distribuição normal multivariada. Quais das variáveis poderiam ser modeladas utilizando essa distribuição? Justifique a sua resposta.
+
+
+<!-- ESSSA PARTE É NOVA -->
+
+
+# Exercício 5
+
+A partir da fórmula da distribuição normal multivariada, encontre a equação da distribuição normal bivariada.
+
+# Exercício 6
+
+Seja o vetor $X= (X_1, X_2) \sim N_2(\mu, \Sigma)$, qual a distribuição de $(X_1/X_2)$? Qual a média e qual a variância desse distribuição.

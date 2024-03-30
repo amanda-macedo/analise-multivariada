@@ -1,0 +1,396 @@
+---
+title: "Gabarito Lista 1 - Análise Multivariada 2023/1"
+subtitle: "Análise Gráfica e Normal Multivariada"
+author: "Márcia H. Barbian"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+
+
+# Exercício 1
+
+```{r, include = FALSE, warning=FALSE, message = FALSE}
+banco.1 <- read.delim("banco 1.txt", header=TRUE) #trocar 
+```
+
+O banco de dados abaixo consiste em quatro medidas diferentes de rigidez; x1, x2, x3 e x4, cada um com n=30.
+
+```{r, echo= FALSE}
+head(banco.1)
+```
+
+## a) 
+Compute a matriz de correlação entre as medidas. O que você nota?
+
+```{r, warning=FALSE, message=FALSE}
+cor(banco.1)
+```
+
+<span style="color:red"> A correlação entre as quatro variáveis são altas, tanto que a menor correlação é entre as variáveis (x2,x4) e (x2,x3) com um valor de 0.788. </span>
+
+## b) 
+Produza gráficos de dispersão entre as variáveis através da função *ggpairs* disponível no pacote *GGally*.
+
+```{r, warning=FALSE, message=FALSE}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(GGally)){install.packages("GGally")}
+
+ggpairs(banco.1)
+```
+
+## c) 
+Faça Q-Q Plot para verificar a normalidade das medidas de rigidez. 
+
+```{r, warning=FALSE, message=FALSE}
+
+if(!require(qqplotr)){install.packages("qqplotr")}
+if(!require(gridExtra)){install.packages("gridExtra")}
+
+x1<- ggplot(data = banco.1, mapping = aes(sample = x1)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "x1")
+
+x2<- ggplot(data = banco.1, mapping = aes(sample = x2)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "x2")
+
+x3<- ggplot(data = banco.1, mapping = aes(sample = x3)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "x3")
+
+x4<- ggplot(data = banco.1, mapping = aes(sample = x4)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", title = "x4")
+
+grid.arrange(x1,x2,x3,x4, ncol=2)
+```
+
+##d)
+Faça mais 3 representações gráficas para esses dados. 
+
+```{r, warning=FALSE, message=FALSE}
+
+a = ggplot(data = banco.1) + 
+  geom_histogram(aes(banco.1$x1), bins = 10, col = "white")
+b = ggplot(data = banco.1) + 
+  geom_histogram(aes(banco.1$x2), bins = 10, col = "white")
+c = ggplot(data = banco.1) + 
+  geom_histogram(aes(banco.1$x3), bins = 10, col = "white")
+d = ggplot(data = banco.1) + 
+  geom_histogram(aes(banco.1$x4), bins = 10, col = "white")
+
+
+grid.arrange(a,b,c,d, ncol=2)
+
+e = ggplot(data = banco.1) + geom_density(aes(banco.1$x1), col = "purple")
+f = ggplot(data = banco.1) + geom_density(aes(banco.1$x2), col = "purple")
+g = ggplot(data = banco.1) + geom_density(aes(banco.1$x3), col = "purple")
+h = ggplot(data = banco.1) + geom_density(aes(banco.1$x4), col = "purple")
+
+grid.arrange(e,f,g,h, ncol=2)
+
+var = c(rep("x1", 30), rep("x2", 30), rep("x3", 30), rep("x4", 30))
+dad = c(banco.1[,1], banco.1[,2], banco.1[,3], banco.1[,4])
+dados = data.frame(dad,var)
+
+ggplot(dados) + 
+  geom_boxplot(aes(x = var, y = dad, fill = var)) + 
+  labs(x = "variáveis", y = "medidas de rigidez", fill = "variáveis")
+```
+
+# Exercício 2
+
+Faça o exercício 1.27 do livro Applied Multivariate Statistical Analysis.
+
+```{r, warning=FALSE, message=FALSE}
+
+
+National_Park = c("Arcadia", "Bruce Canyon", "Cuyahoga Valley", "Everglades", "Grang Canyon", "Grand Teton", "Great Smoky", "Hot Springs", "Olympic", "Mount Rainier", "Rocky Mountain", "Shenandoah", "Yellowstone", "Yosemite", "Zion")
+Size = c(47.4, 35.8, 32.9, 1508.5, 1217.4, 310, 521.8, 5.6, 922.7, 235.6, 265.8, 199, 2219.8, 761.3, 146.6)
+Visitors = c(2.05, 1.02, 2.53, 1.23, 4.4, 2.46, 9.19, 1.34, 3.14, 1.17, 2.80, 1.09, 2.84, 3.3, 2.59)
+
+dados = as.data.frame(cbind(National_Park, Size, Visitors))
+dados$Size = as.numeric(dados$Size)
+dados$Visitors = as.numeric(as.character(dados$Visitors))
+
+dados$Size = as.numeric(as.character(dados$Size)) 
+
+if(!require(ggiraph)){install.packages("ggiraph")}
+
+disp <- ggplot(dados, aes(x = Size, y= Visitors)) + geom_point() + geom_smooth(method = "lm", se = FALSE)
+
+my_gg <- disp + geom_point_interactive(aes(tooltip = National_Park), size = 2)
+ggiraph(code = print(my_gg) )
+
+cor(dados[,-1])
+```
+
+<span style="color:red"> A correlação entre as variáveis size e visitors é de `r cor(dados[,-1])[1,2]` </span>
+
+<span style="color:red"> Aparentemente o outlier diz respeito ao parque *Great Smoky*. Refazendo o gráfico de dispersão sem essa variável obtemos: </span>
+
+
+```{r, warning=FALSE, message=FALSE}
+x = dados[-which(dados$National_Park == "Great Smoky"),]
+cor(x[,-1])
+```
+
+<span style="color:red"> A correlação entre as variáveis size e visitors sem o outlier mudou para `r cor(x[,-1])[1,2]`. </span>
+
+<span style="color:red"> A correlação aumenta com a exclusão dessa observação. Observe que a associação linear entre as variáveis fica mais evidente. </span>
+
+# Exercício 3
+
+```{r, warning=FALSE, message=FALSE}
+banco_maratona <- read.delim("banco_maratona.txt")
+```
+
+## a) Utilize 4 gráficos diferentes para representar os dados da tabela 1.9 do livro Applied Multivariate Statistical Analysis.
+
+```{r, warning=FALSE, message=FALSE}
+ggpairs(banco_maratona[,2:7])
+
+library(tidyverse)
+banco_maratona_tidy = banco_maratona %>%
+                        pivot_longer(`m100`:`Marathon`, names_to = "modalidade", values_to = "tempos")
+ 
+ggplot(banco_maratona_tidy) + 
+  geom_boxplot(aes(x = modalidade , y = tempos, col = modalidade))
+
+
+if(!require(scatterplot3d)){install.packages("scatterplot3d")}
+
+par(mfrow=c(1,2))
+scatterplot3d(
+  banco_maratona[,1:3], pch = 19, color = "steelblue",
+  grid = TRUE, box = FALSE,
+  mar = c(3, 3, 0.5, 3)        
+)
+
+scatterplot3d(
+  banco_maratona[,4:6], pch = 19, color = "purple",
+  grid = TRUE, box = FALSE,
+  mar = c(3, 3, 0.5, 3)        
+)
+
+g1 <- ggplot(data = banco_maratona, mapping = aes(sample = m100)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "X100m.s.")
+
+g2 <- ggplot(data = banco_maratona, mapping = aes(sample = m200)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "X200m.s.")
+
+g3 <- ggplot(data = banco_maratona, mapping = aes(sample = m400)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "X400m.s.")
+
+g4 <- ggplot(data = banco_maratona, mapping = aes(sample = m800)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "X800m.min.")
+
+g5 <- ggplot(data = banco_maratona, mapping = aes(sample = m1500)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "X1500m.min.")
+
+g6 <- ggplot(data = banco_maratona, mapping = aes(sample = m3000)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "X3000.min.")
+
+g7 <- ggplot(data = banco_maratona, mapping = aes(sample = Marathon)) +
+    stat_qq_band() +
+    stat_qq_line() +
+    stat_qq_point() +
+    labs(x = "Theoretical Quantiles", y = "Sample Quantiles", 
+         title = "Marathon..min.")
+
+grid.arrange(g1,g2,g3,g4,g5,g6,g7, ncol = 4)
+```
+
+## b) 
+Interprete os resultados encontrados em *a*.
+
+<span style="color:red"> As correlações são bastante altas entre todas as distâncias, principalmente entre 1.500m e 3.000m. O boxplot mostra que a variabilidade das variáveis são pequenas, com exceção de m400. O scatter plot 3D das menores distância versus a das maiores mostra que as observações possuem menor variância para grandes distâncias. </span>
+
+## c)
+Faça os exercícios 1.17, 1.18 e 1.19 do livro Applied Multivariate Statistical Analysis.
+
+**1.17**
+
+```{r, warning=FALSE, message=FALSE}
+x_bar = apply(banco_maratona[, 2:8], 2, mean)
+S = cov(banco_maratona[, 2:8])
+R = cor(banco_maratona[, 2:8])
+
+R
+```
+
+<span style="color:red"> m100 possui correlação baixa em relação à m200, mas depois possui a maior cor com m400 e vai abaixando essa correlação ao passo que a distância aumenta. m200 possui a maior cor com m400 e depois fica estável entre 0.20. m400 só possui correlação baixa com m200 e m800, m1500 e m3000 a mesma coisa. Para marathon o valor da correlação maior é com m800. </span>
+
+**1.18** 
+
+```{r, warning=FALSE, message=FALSE}
+banco_maratona2 = banco_maratona%>%
+                    mutate(m100 = 100/m100,
+                           m200 = 200/m200,
+                           m400 = 400/m400,
+                           m800 = 800/(m800*60),
+                           m1500 = 1500/(m1500*60),
+                           Marathon = 42195/(Marathon*60))
+
+x_bar = apply(banco_maratona2[, 2:8], 2, mean)
+S = cov(banco_maratona2[, 2:8])
+R = cor(banco_maratona2[, 2:8])
+
+R
+```
+
+<span style="color:red"> As correlações ficaram no geral mais baixas</span>
+
+**1.19** 
+
+```{r, warning=FALSE, message=FALSE}
+
+ggpairs(banco_maratona[, 2:8])
+ggplot(data = banco_maratona_tidy, mapping = aes(x = modalidade, y = tempos, fill = modalidade)) + 
+  geom_boxplot() + 
+  labs(fill = "Distâncias")
+
+ggpairs(banco_maratona2[, 2:8])
+
+banco_maratona_tidy2 = banco_maratona2 %>%
+  pivot_longer(`m100`:`Marathon`, names_to = "modalidade", values_to = "tempos")
+
+
+ggplot(banco_maratona_tidy2, aes(x = modalidade, y = tempos, fill = modalidade,alpha=0.7)) + 
+  geom_boxplot() + 
+  labs(fill = "Tipo")
+```
+
+
+# Exercício 4
+
+Um famoso banco de dados que está disponível no R é o *gapminder* do pacote de mesmo nome. O banco possui os dados referentes à população, renda per capta e expectativa de vida de diferentes países.
+
+## a)
+Veja o vídeo:
+https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen?language=pt-br
+
+## b)
+Veja o vídeo: https://www.youtube.com/watch?v=jbkSRLYSojo&t=207s
+
+## c)
+Faça 5 representações gráficas desses dados.
+
+```{r, warning=FALSE, message=FALSE}
+
+if(!require(gapminder)){install.packages("gapminder")}
+if(!require(lattice)){install.packages("lattice")}
+
+dados = gapminder
+ggpairs(dados[, 4:6]) #1
+
+dados_gapminder = dados
+
+ggplot(dados_gapminder) +
+  #geom_point(aes(x= year, y = pop, fill = continent, color = continent))+
+  geom_smooth(aes(x= year, y = pop, fill = continent, color = continent), method = "lm", se=FALSE)
+
+
+ggplot(dados_gapminder) +
+  geom_boxplot(aes(x = log(pop), fill = continent, color = continent))
+
+ggplot(dados_gapminder) +
+  #geom_point(aes(x= year, y = pop, fill = continent, color = continent))+
+  geom_smooth(aes(x= year, y = log(gdpPercap), fill = continent, color = continent), method = "lm", se=FALSE)
+
+
+dados_gapminder %>% 
+  ggplot(aes(x = log(gdpPercap),
+             y = lifeExp)) +
+  geom_point(aes(color = continent)) +
+  facet_grid(~ continent)
+
+
+
+dados_gapminder_tidy = dados_gapminder %>%
+  pivot_longer(`lifeExp`:`gdpPercap`, names_to = "variavel", values_to = "valores")
+ 
+ggplot(dados_gapminder_tidy) +
+  geom_boxplot(aes(x= variavel, y = valores, fill= 
+                     variavel, color = variavel)) +
+  facet_wrap(~continent)
+
+```
+
+## d)
+Queremos modelar algumas variáveis conjuntamente, utilizando uma distribuição normal multivariada. Quais das variáveis poderiam ser modeladas utilizando essa distribuição? Justifique a sua resposta.
+
+<span style="color:red"> As variáveis que podem ser modeladas a patir da normal multivariada são lifeExp, pop e gdpPercap, pois são quantitativas contínuas, enquanto as demais são qualitativas ordinais. Mas, nenhuma delas possui o formato de sino, então seria necessário utilizar transformações para avaliar a possibilidade de utilizar a distribuição normal para modelar esses dados.</span>
+
+
+# Exercício 5
+
+A partir da fórmula da distribuição normal multivariada, encontre a equação da distribuição normal bivariada.
+
+<span style="color:red"> Seja $\boldsymbol{Y} \sim \ N(\boldsymbol{\mu},\boldsymbol{\Sigma})$, </span>
+
+<span style="color:red"> onde $\boldsymbol{\mu} = [\mu_1, ..., \mu_p]$ e $\boldsymbol{\Sigma} =
+ \begin{pmatrix}
+  \sigma_{11}^2 & \sigma_{12}^2 & \cdots & \sigma_{1p}^2 \\
+  \sigma_{21}^2 & \sigma_{22}^2 & \cdots & \sigma_{2p}^2 \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  \sigma_{p1}^2 & \sigma_{p2}^2 & \cdots & \sigma_{pp}^2
+ \end{pmatrix}$, p = número de variáveis $\boldsymbol{Y}$, então a distribuição normal multivariada é: </span>
+ 
+<span style="color:red"> $$f_Y(\boldsymbol{y}) = |\boldsymbol{\Sigma}|^{-1/2}(2\pi)^{-p/2}exp[\frac{-1}{2}(\boldsymbol{y}-\boldsymbol{\mu})^{t}\boldsymbol{\Sigma}^{-1}(\boldsymbol{y}-\boldsymbol{\mu})]$$
+Quando p = 2, a distribuição normal multivariada vira uma bivariada, logo: </span>
+
+<span style="color:red"> $$f_Y(\boldsymbol{y}) = |\boldsymbol{\Sigma}|^{-1}2\pi^{-1}exp[\frac{-1}{2}(\boldsymbol{y}-\boldsymbol{\mu})^{t}\boldsymbol{\Sigma}^{-1}(\boldsymbol{y}-\boldsymbol{\mu})]$$, que pode ser escrita como: </span>
+
+<span style="color:red"> $$f(y_1, y_2) = \frac{1}{2\pi((1-\rho^2)\sigma_1^2\sigma_2^2)^{1/2}}exp(\frac{-1}{2(1-\rho^2)}[(\frac{y_1-\mu_1}{\sigma_1)}^2 + (\frac{y_2-\mu_2}{\sigma_2})^2 - 2\rho(\frac{y_1-\mu_1}{\sigma_1})(\frac{y_2-\mu_2}{\sigma_2})])$$
+Onde $\mu_1 =$ média de $y_1$, $\mu_2 =$ média de $y_2$, $\sigma_1 =$ desvio padrão de $y_1$, $\sigma_2 =$ desvio padrão de $y_2$ e $\rho =$ a correlação entre $y_1$ e $y_2$. </span>
+
+
+
+# Exercício 6
+
+Seja o vetor $X= (X_1, X_2) \sim N_2(\mu, \Sigma)$, qual a distribuição de $(X_1/X_2)$? Qual a média e qual a variância desse distribuição.
+
+<span style="color:red"> A distribuição $(X_1/X_2)$ é $(X_1/X_2 = x) \sim N(\mu_{X_1/X_2 = x}, \sigma_{X_1/X_2 = x}^2)$ </span>
+
+<span style="color:red"> Essa distribuição possui média e variância iguais a: $\mu_{X_1/X_2 = x} = \mu_1 + \frac{\rho\sigma_1}{\sigma_2}(x-\mu_2)$ e $\sigma_{X_1/X_2 = x} = \sigma_1(1-\rho^2)^{1/2}$, respectivamente. </span>
+
