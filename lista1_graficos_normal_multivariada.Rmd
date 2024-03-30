@@ -15,7 +15,7 @@ output:
 
 ```{r, include = FALSE, warning=FALSE, message = FALSE}
 library(tidyverse)
-banco.1 <- read.delim("banco 1.txt", header=TRUE) #trocar 
+banco.1 <- read.delim("C:/Users/amand/OneDrive/Documentos/GitHub/analise-multivariada/banco 1.txt", header=TRUE)  
 ```
 
 O banco de dados abaixo consiste em quatro medidas diferentes de rigidez; x1, x2, x3 e x4, cada um com n=30.
@@ -26,20 +26,61 @@ head(banco.1)
 
 ## a) 
 Compute a matriz de correlação entre as medidas. O que você nota?
+```{r, echo= FALSE}
+library(corrplot)
+
+
+banco.1 %>%
+  cor() %>%
+  corrplot(method = c('number'))
+```
+Com a matriz de correlação notamos que todas as variáveis são bastante correlacionadas, com coeficientes de correlação bem altos.
 
 
 ## b) 
 Produza gráficos de dispersão entre as variáveis através da função *ggpairs* disponível no pacote *GGally*.
 
+```{r, echo= FALSE}
+library(GGally)
+ggpairs(banco.1)
+```
 
 ## c) 
 Faça Q-Q Plot para verificar a normalidade das medidas de rigidez. 
 
+```{r, echo= FALSE}
+par(mfrow = c(2, 2))
+
+qqnorm(banco.1$x1, main = "Q-Q Plot para x1")
+qqline(banco.1$x1, col = "red")
+
+qqnorm(banco.1$x2, main = "Q-Q Plot para x2")
+qqline(banco.1$x2, col = "red")
+
+qqnorm(banco.1$x3, main = "Q-Q Plot para x3")
+qqline(banco.1$x3, col = "red")
+
+qqnorm(banco.1$x4, main = "Q-Q Plot para x4")
+qqline(banco.1$x4, col = "red")
+
+shapiro.test(banco.1$x1)
+shapiro.test(banco.1$x2)
+shapiro.test(banco.1$x3)
+shapiro.test(banco.1$x4)
+
+```
 
 ##d)
 Faça mais 3 representações gráficas para esses dados. 
-
-
+```{r, echo= FALSE}
+library(psych)
+pairs.panels(banco.1)
+par(mfrow=c(2,2))
+boxplot(banco.1$x1)
+boxplot(banco.1$x2)
+boxplot(banco.1$x3)
+boxplot(banco.1$x4)
+```
 # Exercício 2
 
 Faça o exercício 1.27 do livro Applied Multivariate Statistical Analysis.
