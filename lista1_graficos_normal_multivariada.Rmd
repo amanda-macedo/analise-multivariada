@@ -26,7 +26,7 @@ head(banco.1)
 
 ## a) 
 Compute a matriz de correlação entre as medidas. O que você nota?
-```{r, echo= FALSE}
+```{r, echo= FALSE,warning=FALSE}
 library(corrplot)
 
 
@@ -40,7 +40,7 @@ Com a matriz de correlação notamos que todas as variáveis são bastante corre
 ## b) 
 Produza gráficos de dispersão entre as variáveis através da função *ggpairs* disponível no pacote *GGally*.
 
-```{r, echo= FALSE}
+```{r, echo= FALSE,warning=FALSE}
 library(GGally)
 ggpairs(banco.1)
 ```
@@ -48,7 +48,7 @@ ggpairs(banco.1)
 ## c) 
 Faça Q-Q Plot para verificar a normalidade das medidas de rigidez. 
 
-```{r, echo= FALSE}
+```{r, echo= FALSE,warning=FALSE}
 par(mfrow = c(2, 2))
 
 qqnorm(banco.1$x1, main = "Q-Q Plot para x1")
@@ -72,7 +72,7 @@ shapiro.test(banco.1$x4)
 
 ##d)
 Faça mais 3 representações gráficas para esses dados. 
-```{r, echo= FALSE}
+```{r, echo= FALSE,warning=FALSE}
 library(psych)
 pairs.panels(banco.1)
 par(mfrow=c(2,2))
@@ -87,7 +87,7 @@ Faça o exercício 1.27 do livro Applied Multivariate Statistical Analysis.
 1.27. Table 1.11 presents the 2005 attendance (millions) at the fifteen most visited national 
 parks and their size (acres). 
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE,warning=FALSE}
 
 
 National_Park = c("Arcadia", "Bruce Canyon", "Cuyahoga Valley", "Everglades", "Grang Canyon", "Grand Teton", "Great Smoky", "Hot Springs", "Olympic", "Mount Rainier", "Rocky Mountain", "Shenandoah", "Yellowstone", "Yosemite", "Zion")
@@ -102,7 +102,7 @@ dados$Size = as.numeric(as.character(dados$Size))
 
 ```
 (a) Create a scatter plot and calculate the correlation coefficient.
-```{r, echo= FALSE}
+```{r, echo= FALSE,warning=FALSE}
 cat("O coeficiente de correlação das variáveis é:", cor(dados$Size, dados$Visitors), "\n")
 plot(dados$Size, dados$Visitors, 
      xlab = "Size", ylab = "Visitors", 
@@ -111,7 +111,7 @@ plot(dados$Size, dados$Visitors,
 
 (b) Identify the park that is unusual. Drop this point and recalculate the correlation 
 coefficient. Comment on the effect of this one point on correlation. 
-```{r, echo= FALSE}
+```{r, echo= FALSE,warning=FALSE}
 dados <- dados[-which.min(dados$Visitors), ]
 cat("O coeficiente de correlação das variáveis tirando o parque de menor número de visitantes é:", cor(dados$Size, dados$Visitors), "\n")
 plot(dados$Size, dados$Visitors, 
@@ -123,6 +123,17 @@ Tirando o parque com menor número de visitantes, Bruce Canyon, o coeficiente de
   
 (c) Would the correlation in Part b change if you measure size in square miles instead of 
 acres? Explain. 
+Para trasnformar a variável Size de hectares para milhas quadradas temos que multiplicar por 10000 e dividir por 2589988.
+```{r, echo= FALSE,warning=FALSE}
+library(dplyr)
+dados <- dados %>% 
+  mutate(Size_milhas_quadradas = Size * (10000 / 2.58998811e6))
+cat("O coeficiente de correlação das variáveis tirando o parque de menor número de visitantes é:", cor(dados$Size_milhas_quadradas, dados$Visitors), "\n")
+plot(dados$Size, dados$Visitors, 
+     xlab = "Size", ylab = "Visitors", 
+     main = "Scatter Plot de Size e Visitors")
+```
+O coeficiente de correlação não muda já que transformamos a variável para todos os parques.  
 
 # Exercício 3
 
@@ -132,7 +143,16 @@ banco_maratona <- read.delim("banco_maratona.txt")
 
 ## a) 
 Utilize 4 gráficos diferentes para representar os dados da tabela 1.9 do livro Applied Multivariate Statistical Analysis.
-
+```{r, echo= FALSE}
+pairs.panels(subset(banco_maratona,select=-Country))
+par(mfrow=c(2,3))
+boxplot(banco_maratona$m100)
+boxplot(banco_maratona$m200)
+boxplot(banco_maratona$m400)
+boxplot(banco_maratona$m800)
+boxplot(banco_maratona$m1500)
+boxplot(banco_maratona$m3000)
+```
 
 ## b) 
 Interprete os resultados encontrados em *a*.
