@@ -84,6 +84,8 @@ boxplot(banco.1$x4)
 # Exercício 2
 
 Faça o exercício 1.27 do livro Applied Multivariate Statistical Analysis.
+1.27. Table 1.11 presents the 2005 attendance (millions) at the fifteen most visited national 
+parks and their size (acres). 
 
 ```{r, warning=FALSE, message=FALSE}
 
@@ -99,7 +101,28 @@ dados$Visitors = as.numeric(as.character(dados$Visitors))
 dados$Size = as.numeric(as.character(dados$Size)) 
 
 ```
+(a) Create a scatter plot and calculate the correlation coefficient.
+```{r, echo= FALSE}
+cat("O coeficiente de correlação das variáveis é:", cor(dados$Size, dados$Visitors), "\n")
+plot(dados$Size, dados$Visitors, 
+     xlab = "Size", ylab = "Visitors", 
+     main = "Scatter Plot de Size e Visitors")
+```
 
+(b) Identify the park that is unusual. Drop this point and recalculate the correlation 
+coefficient. Comment on the effect of this one point on correlation. 
+```{r, echo= FALSE}
+dados <- dados[-which.min(dados$Visitors), ]
+cat("O coeficiente de correlação das variáveis tirando o parque de menor número de visitantes é:", cor(dados$Size, dados$Visitors), "\n")
+plot(dados$Size, dados$Visitors, 
+     xlab = "Size", ylab = "Visitors", 
+     main = "Scatter Plot de Size e Visitors")
+```
+Tirando o parque com menor número de visitantes, Bruce Canyon, o coeficiente de correlação caiu.
+
+  
+(c) Would the correlation in Part b change if you measure size in square miles instead of 
+acres? Explain. 
 
 # Exercício 3
 
